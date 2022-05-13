@@ -1,4 +1,5 @@
 import Breadcrumb from "./components/Breadcrumb.js";
+import ImageModal from "./components/ImageModal.js";
 import Nodes from "./components/Nodes.js";
 import { request } from "./utils/api.js";
 
@@ -8,6 +9,7 @@ export default function App({ $target, initialState }) {
     currentItems: [],
     isRoot: true,
     directories: ["root"],
+    modalImgPath: null,
   };
 
   this.setState = (nextState) => {
@@ -26,6 +28,7 @@ export default function App({ $target, initialState }) {
         items: this.state.fetchItems,
       });
     }
+    imageModal.setState(this.state.modalImgPath);
   };
 
   const breadcrumb = new Breadcrumb({
@@ -47,16 +50,27 @@ export default function App({ $target, initialState }) {
         currentItems: result,
         directories: [...this.state.directories, nodeName],
       });
-      console.log(this.state);
+    },
+    onModalClick: async (filePath) => {
+      console.log("모달이벤트", filePath);
+      this.setState({
+        ...this.state,
+        modalImgPath: filePath,
+      });
     },
   });
+
+  const imageModal = new ImageModal({
+    $target,
+    initialState: this.state.modalImgPath,
+  });
+
   const init = async () => {
     const result = await request();
     this.setState({
       ...this.state,
       fetchItems: result,
     });
-    console.log(this.state);
   };
   init();
 }

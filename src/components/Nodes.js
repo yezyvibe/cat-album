@@ -1,4 +1,9 @@
-export default function Nodes({ $target, initialState, onClick }) {
+export default function Nodes({
+  $target,
+  initialState,
+  onClick,
+  onModalClick,
+}) {
   this.state = initialState;
   const $component = document.createElement("div");
   $component.className = "Nodes";
@@ -13,12 +18,16 @@ export default function Nodes({ $target, initialState, onClick }) {
     const directoryImgPath = "./assets/directory.png";
     const filePathImgPath = "./assets/file.png";
     $component.innerHTML = `
+      ${
+        !this.state.isRoot
+          ? `<div class="Node"><img src="./assets/prev.png"></div>`
+          : ""
+      }
+
       ${this.state.items
         .map(
           (item) => `
-        <div class="Node" data-node-id="${item.id}" data-node-name="${
-            item.name
-          }">
+        <div class="Node" data-node-id="${item.id}">
           <img src="${
             item.type === "DIRECTORY" ? directoryImgPath : filePathImgPath
           }">
@@ -35,9 +44,19 @@ export default function Nodes({ $target, initialState, onClick }) {
   $component.addEventListener("click", (e) => {
     const div = e.target.closest("div");
     const { nodeId } = div.dataset;
-    const { nodeName } = div.dataset;
-    if (nodeId && nodeName) {
-      onClick(parseInt(nodeId), nodeName);
+
+    if (nodeId) {
+      const currentNode = this.state.items.find((item) => item.id === nodeId);
+      if (currentNode.type === "DIRECTORY") {
+        onClick(parseInt(nodeId), currentNode.name);
+      } else if (currentNode.type === "FILE" && currentNode.filePath) {
+        onModalClick(currentNode.filePath);
+      }
     }
+  });
+
+  $component.addEventListener("click", (e) => {
+    const div = e.target.closest("div");
+    console.log(div);
   });
 }
