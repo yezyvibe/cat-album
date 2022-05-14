@@ -1,4 +1,4 @@
-export default function ImageModal({ $target, initialState }) {
+export default function ImageModal({ $target, initialState, onModalClose }) {
   this.state = initialState;
   const $component = document.createElement("div");
   $component.className = "Modal ImageViewer";
@@ -28,13 +28,15 @@ export default function ImageModal({ $target, initialState }) {
 
   window.addEventListener("keyup", (e) => {
     if (e.key === "Escape") {
-      $component.style.display = "none";
+      onModalClose();
     }
   });
-  // window.addEventListener("click", (e) => {
-  //   const $node = e.target.closest(".content")
-  //   if (!$node) {
-  //     $component.style.display = "none"
-  //   }
-  // })
+  $component.addEventListener("click", (e) => {
+    if (this.state) {
+      const $node = e.target.closest(".content");
+      if (!$node) {
+        onModalClose();
+      }
+    }
+  });
 }

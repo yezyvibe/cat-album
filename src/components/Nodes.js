@@ -3,6 +3,7 @@ export default function Nodes({
   initialState,
   onClick,
   onModalClick,
+  onBackClick,
 }) {
   this.state = initialState;
   const $component = document.createElement("div");
@@ -48,15 +49,12 @@ export default function Nodes({
     if (nodeId) {
       const currentNode = this.state.items.find((item) => item.id === nodeId);
       if (currentNode.type === "DIRECTORY") {
-        onClick(parseInt(nodeId), currentNode.name);
+        onClick(currentNode, nodeId);
       } else if (currentNode.type === "FILE" && currentNode.filePath) {
         onModalClick(currentNode.filePath);
       }
+    } else {
+      onBackClick();
     }
-  });
-
-  $component.addEventListener("click", (e) => {
-    const div = e.target.closest("div");
-    console.log(div);
   });
 }

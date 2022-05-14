@@ -11,6 +11,7 @@ export const request = async (nodeId) => {
       return json;
     }
   } catch (e) {
+    alert("고양이 사진 정보를 제대로 불러오지 못했습니다!");
     console.log(e.message);
   }
 };
